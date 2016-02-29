@@ -10,7 +10,7 @@
     GLU)
   (class javax.media.opengl.awt
     GLCanvas))
-(load "do-times.scm")
+(load "misc.scm")
 
 (define (rotMat ix1 ix2 rad)
   (let ((s (sin rad)) (c (cos rad)))
