@@ -8,6 +8,8 @@
     GLEventListener)
   (class javax.media.opengl.glu
     GLU)
+  (class com.jogamp.opengl.util
+    FPSAnimator)
   (class javax.media.opengl.awt
     GLCanvas))
 (load "misc.scm")
@@ -25,14 +27,47 @@
 
 (define (drawShip gl ::GL2 pos orientation)
   (begin
+    (define vr vector-ref)
+    (define (mult vec mat . others)
+      (let ((passMe
+        #((+ (* (vr vec 0) (vr mat 0))
+	     (* (vr vec 1) (vr mat 1))
+	     (* (vr vec 2) (vr mat 2)))
+	  (+ (* (vr vec 0) (vr mat 3))
+	     (* (vr vec 1) (vr mat 4))
+	     (* (vr vec 2) (vr mat 5)))
+	  (+ (* (vr vec 0) (vr mat 6))
+	     (* (vr vec 1) (vr mat 7))
+	     (* (vr vec 2) (vr mat 8))))))
+        (if (null? others) passMe
+	  (mult passMe @others))))
+    (define (transform p)
+      (map + pos (mult p
+	(rotMat 0 1 (vr orientation 2))
+	(rotMat 2 1 (vr orientation 1))
+        (rotMat 0 2 (vr orientation 0)))))
     (gl:glBegin GL:GL_TRIANGLES)
-    (gl:glColor3f 1.0 0 0)))
+    (gl:glColor3f 1.0 0 0)
+    (map (lambda (a) (gl:glVertex3f @(transform a)))
+      '(
+        ;coordinates for the model
+        (0.5 0 0)
+	(-0.5 0 0)
+	(0 0 1)
+
+	(0 0 0)
+	(0 0.5 0)
+	(0 0 1)
+      ))
+    (gl:glEnd)
+    ))
 
 (define glp (GLProfile:getDefault))
 (define glcap (GLCapabilities glp))
 (define glcan ::GLCanvas (GLCanvas glcap))
 (define frame ::java.awt.Frame (java.awt.Frame "Banana"))
 (define glu ::GLU (GLU))
+(define ship '((0 0 4) #(0.5 0 0)))
 (frame:setSize 500 500)
 (frame:add glcan)
 (frame:setVisible #t)
@@ -43,7 +78,7 @@
   ((display d ::GLAutoDrawable) ::void
   	(define gl ::GL2 ((d:getGL):getGL2))
 	(glu:gluPerspective 90 1 1 100)
-	(gl:glClear GL:GL_COLOR_BUFFER_BIT)))
+	(gl:glClear GL:GL_COLOR_BUFFER_BIT)
+	(drawShip gl (car ship) (cadr ship))))
 (glcan:addGLEventListener (myclass))
-(sleep 2)
-(frame:dispose)
+((FPSAnimator glcan 30):start)
