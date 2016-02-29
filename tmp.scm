@@ -33,7 +33,8 @@
     (define vr vector-ref)
     (define (mult vec mat . others)
       (let ((passMe
-        #((+ (* (vr vec 0) (vr mat 0))
+        (vector
+	  (+ (* (vr vec 0) (vr mat 0))
 	     (* (vr vec 1) (vr mat 1))
 	     (* (vr vec 2) (vr mat 2)))
 	  (+ (* (vr vec 0) (vr mat 3))
@@ -82,6 +83,7 @@
   	(define gl ::GL2 ((d:getGL):getGL2))
 	(glu:gluPerspective 90 1 1 100)
 	(gl:glClear GL:GL_COLOR_BUFFER_BIT)
-	(drawShip gl (car ship) (cadr ship))))
+	;(drawShip gl (car ship) (cadr ship))
+	))
 (glcan:addGLEventListener (myclass))
 ((FPSAnimator glcan 30):start)
