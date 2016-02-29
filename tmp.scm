@@ -1,4 +1,7 @@
 (import
+
+  (misc)
+
   (class javax.media.opengl
     GLAutoDrawable
     GL
@@ -12,12 +15,12 @@
     FPSAnimator)
   (class javax.media.opengl.awt
     GLCanvas))
-(load "misc.scm")
+
 
 (define (rotMat ix1 ix2 rad)
-  (let ((s (sin rad)) (c (cos rad)))
-    (define v (make-vector 9))
-    (do-times i 9 (vector-set! v i 0))
+  (let ((s (sin rad)) 
+	(c (cos rad))
+	(v (make-vector 9 0)))
     (vector-set! v (* 4 ix1) c)
     (vector-set! v (* 4 ix2) c)
     (vector-set! v (+ (* 3 ix1) ix2) s)

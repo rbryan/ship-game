@@ -1,3 +1,8 @@
+(module-export
+  define-syntax-rule
+  do-times)
+
+
 (define-syntax define-syntax-rule
   (lambda (x)
     (syntax-case x ()
