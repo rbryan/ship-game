@@ -13,7 +13,8 @@
 	       InputStreamReader))
 
 (define clients '())
-(define world (make-hash-table))
+(define world '())
+(set! world (append world '((1 . 'hi))))
 
 (define (server)
   (let ((listener ::ServerSocket (ServerSocket 9001)))
@@ -23,8 +24,7 @@
       (loop (listener:accept)))))
 
 (define (world->string world)
-  (let ((world (hash-table->alist world))
-        (output-string-port (open-output-string)))
+  (let ((output-string-port (open-output-string)))
     (write world output-string-port)
     (get-output-string output-string-port)))
 
@@ -35,13 +35,16 @@
 		  	(let ((world-string (world->string world))
 			      (output-port ::PrintWriter (PrintWriter (client:getOutputStream)))
 			      (input-port ::BufferedReader (BufferedReader (InputStreamReader (client:getInputStream)))))
+			  (display client)
+			  (newline)
 			  (if (input-port:ready)
 			    (begin
 			      (display (input-port:readLine))
 			      (newline)))
-			  (output-port:println world-string)))
+			  (output-port:println world-string)
+			  (output-port:flush)))
 		clients)
-      (sleep 0.5)
+      (sleep 0.1)
       (main-loop (+ 1 tick)))))
 
 (main)
