@@ -20,7 +20,8 @@
     (vector-set! v (* 4 ix2) c)
     (vector-set! v (+ (* 3 ix1) ix2) s)
     (vector-set! v (+ (* 3 ix2) ix1) (- s))
-    (vector-set! v (* 4 (- 3 ix1 ix2)) 1)))
+    (vector-set! v (* 4 (- 3 ix1 ix2)) 1)
+    v))
 
 (define (drawShip gl ::GL2 pos orientation)
   (begin
